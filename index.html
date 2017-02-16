@@ -1,154 +1,208 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>P4 scales lab</title>
-<style type="text/css">
-.control-scale-div {
-    border:1px solid blue;
-    padding:5px;
-    font-size:12px;
-}
-.control-div {
-    float:left;
-    padding:5px;
-}
-.scale-div {
-    padding:5px;
-}
-.up-down-button {
-    padding:0px;
-    margin:0px;
-}
-.canvas-size-select {
-    width:100%;
-}
-.predef-scale-select {
-    width:100%;
-}
-.scale-structure-title {
-    text-align:center;
-}
-.canvas-tip {
-    font-size:12px;
-}
-.main-canvas {
-    border:1px solid blue;
-    position:fixed;
-    left:5px;
-}
-.root {
-    border-style:solid;
-    border-width:1px;
-    border-color:black;
-    background-color:white;
-}
-</style>
-<script type="text/javascript" src="p4lab.js"></script>
-<style>@media print {#ghostery-purple-box {display:none !important}}</style>
-</head>
-
-<body style="position: relative;" onload="init();">
- <div class="control-scale-div">
-  <div class="control-div">
-   <table>
-     <tbody><tr><td>Strings count</td>
-     <td><input id="scount-less" class="up-down-button" type="button" value="-" onclick="cb_stringscount_change(-1);">
-       <input id="strings-count" type="text" min="1" max="24" step="1" value="8" readonly="readonly" style="width:50px;">
-      <input id="scount-more" class="up-down-button" type="button" value="+" onclick="cb_stringscount_change(+1);">
-      </td></tr>
-    <tr><td>Frets count</td>
-     <td><input id="fcount-less" class="up-down-button" type="button" value="-" onclick="cb_fretscount_change(-1);">
-       <input id="frets-count" type="text" min="1" max="32" step="1" value="24" readonly="readonly" style="width:50px;">
-      <input id="fcount-more" class="up-down-button" type="button" value="+" onclick="cb_fretscount_change(+1);">
-      </td></tr>
-    <tr><td>Horizontal extent</td> <td><input type="checkbox" id="h-extent" value="yes" onclick="reinit_canvas();"></td></tr>
-     <tr><td>Vertical extent</td> <td><input type="checkbox" id="v-extent" value="yes" onclick="reinit_canvas();"></td></tr>
-    <tr><td>Display degrees</td> <td><input type="checkbox" id="display-degrees" checked="true" value="yes" onclick="cb_display_degrees();"></td></tr>
-     <tr><td>Canvas size</td>
-     <td>
-      <select class="canvas-size-select" id="canvas-size" value="500x500" onchange="cb_canvas_size_changed();">
-        <option value="200x150">200x150</option>
-       <option value="300x200">300x200</option>
-       <option value="400x300">400x300</option>
-       <option value="500x400">500x400</option>
-        <option value="600x500">600x500</option>
-       <option value="700x600">700x600</option>
-       <option value="800x700">800x700</option>
-       <option value="1200x800">1200x800</option>
-      </select>
-      </td>
-    </tr>
-   </tbody></table>
-  </div>
-  <div class="scale-div" style="overflow:hidden;">
-   <table>
-    <tbody><tr><td colspan="12">Predefined scales<select class="predef-scale-select" id="predefined-scales" onchange="cb_predef_changed();"><option value="predef-0" style="background-color: white;">custom</option><option value="predef-1" style="background-color: rgb(224, 224, 255);">major</option><option value="predef-2" style="background-color: white;">ionian (major mode 1)</option><option value="predef-3" style="background-color: rgb(224, 224, 255);">dorian (major mode 2)</option><option value="predef-4" style="background-color: white;">phrygian (major mode 3)</option><option value="predef-5" style="background-color: rgb(224, 224, 255);">lydian (major mode 4)</option><option value="predef-6" style="background-color: white;">mixolydian (major mode 5)</option><option value="predef-7" style="background-color: rgb(224, 224, 255);">aeolian (major mode 6)</option><option value="predef-8" style="background-color: white;">locrian (major mode 7)</option><option value="predef-9" style="background-color: rgb(224, 224, 255);">melodic minor</option><option value="predef-10" style="background-color: white;">dorian b9 (melodic minor - mode 2)</option><option value="predef-11" style="background-color: rgb(224, 224, 255);">lydian #5 (melodic minor - mode 3)</option><option value="predef-12" style="background-color: white;">lydian b7 (melodic minor - mode 4)</option><option value="predef-13" style="background-color: rgb(224, 224, 255);">mixolydian b13 (melodic minor - mode 5)</option><option value="predef-14" style="background-color: white;">locrian &#9838;9 (melodic minor - mode 6)</option><option value="predef-15" style="background-color: rgb(224, 224, 255);">altered (melodic minor - mode 7)</option><option value="predef-16" style="background-color: white;">harmonic minor</option><option value="predef-17" style="background-color: rgb(224, 224, 255);">locrian &#9838;13 (harmonic minor - mode 2)</option><option value="predef-18" style="background-color: white;">ionian #5 (harmonic minor - mode 3)</option><option value="predef-19" style="background-color: rgb(224, 224, 255);">dorian #11 (harmonic minor - mode 4)</option><option value="predef-20" style="background-color: white;">mixolydian b9 b13 (harmonic minor - mode 5)</option><option value="predef-21" style="background-color: rgb(224, 224, 255);">lydian #9 (harmonic minor - mode 6)</option><option value="predef-22" style="background-color: white;">altered bb7 (harmonic minor - mode 7)</option><option value="predef-23" style="background-color: rgb(224, 224, 255);">major - pentatonic</option><option value="predef-24" style="background-color: white;">minor - pentatonic</option><option value="predef-25" style="background-color: rgb(224, 224, 255);">minor 6 pentatonic</option><option value="predef-26" style="background-color: white;">1-2-3-4</option><option value="predef-27" style="background-color: rgb(224, 224, 255);">1-3b-4-5</option><option value="predef-28" style="background-color: white;">major bop</option><option value="predef-29" style="background-color: rgb(224, 224, 255);">mixolydian bop</option></select></td></tr>
-     <tr><td colspan="12" class="scale-structure-title">Scale structure</td></tr>
- <!--
-
-
-     2-   2   3-   3     4      5-    5    6-      6       7-       7M
-   1
-     9-   9   9+   4-           4+         5+              6+
-
-       11-   11    11+        13-     13      13+
- -->
-    <tr align="right" id="line1" style="background-color: rgb(255, 224, 255);">
-      <td></td><td></td><td></td>
-      <td>2+<input id="chk-2+" type="checkbox" onclick="cb_adjust_chk(this);"></td><td></td><td>
-     </td><td>4+<input id="chk-4+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>
-      </td><td>5+<input id="chk-5+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>
-     </td><td>6+<input id="chk-6+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>
-    </td></tr>
-    <tr align="right" id="line2" style="background-color: rgb(224, 255, 224);">
-     <td>
-     </td><td>2-<input id="chk-2-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>
-     </td><td>3-<input id="chk-3-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>4-<input id="chk-4-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>
-     </td><td>5-<input id="chk-5-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>
-     </td><td>6-<input id="chk-6-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>7--<input id="chk-7--" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>7-<input id="chk-7-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>
-    </td></tr>
-    <tr align="right" id="line3" style="background-color: rgb(224, 224, 255);">
-     <td class="root">1<input id="chk-1" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-      <td>
-     </td><td>2<input id="chk-2" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-     <td>
-     </td><td>3<input id="chk-3" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-      <td>4<input id="chk-4" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-     <td>
-     </td><td>5<input id="chk-5" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-      <td>
-     </td><td>6<input id="chk-6" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-     <td>
-     </td><td>7M<input id="chk-7M" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
-     </tr>
-    <tr align="right" id="line4" style="background-color: rgb(255, 176, 176);">
-     <td>
-     </td><td>9-<input id="chk-9-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>9<input id="chk-9" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>9+<input id="chk-9+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>11-<input id="chk-11-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>11<input id="chk-11" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>11+<input id="chk-11+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>
-     </td><td>13-<input id="chk-13-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>13<input id="chk-13" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-     <td>13+<input id="chk-13+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
-      <td>
-    </td></tr>
-   </tbody></table>
-  </div>
- </div>
- <p class="canvas-tip" style="border:solid 1pw blue;">(You can drag the mouse to shift the canvas up/down left/right)</p>
- <canvas class="main-canvas" id="main-canvas" width="500" height="400">
-</canvas></body></html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>P4 scales lab</title>
+        <style type="text/css">
+            .control-scale-div
+            {
+                border:1px solid blue;
+                padding:10px;
+                font-size:12px;
+            }
+            .control-div
+            {
+                float:left;
+                padding:10px;
+            }
+            .scale-div
+            {
+                padding:10px;
+            }
+            .up-down-button
+            {
+                padding:0px;
+                margin:0px;
+            }
+            .canvas-size-select
+            {
+                width:100%;
+            }
+            .predef-scale-select
+            {
+                width:100%;
+            }
+            .scale-structure-title
+            {
+                text-align:center;
+            }
+            .canvas-tip
+            {
+                font-size:12px;
+            }
+            .main-canvas
+            {
+                border:1px solid blue;
+                position:fixed;
+                padding:10px;
+            }
+            .root
+            {
+                border-style:solid;
+                border-width:1px;
+                border-color:black;
+                background-color:white;
+            }
+        </style>
+        <script type="text/javascript" src="p4lab.js"></script>
+    </head>
+    <body style="position: relative;" onload="init();">
+        <div class="control-scale-div">
+            <div class="control-div">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Tuning difference</td>
+                            <td>
+                                <input id="tuning-difference-less" class="up-down-button" type="button" value="-" onclick="cb_tuningdifference_change(-1);">
+                                <input id="tuning-difference" type="text" min="0" max="11" step="1" value="5" readonly="readonly" style="width:50px;">
+                                <input id="tuning-difference-more" class="up-down-button" type="button" value="+" onclick="cb_tuningdifference_change(+1);">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Strings count</td>
+                            <td>
+                                <input id="scount-less" class="up-down-button" type="button" value="-" onclick="cb_stringscount_change(-1);">
+                                <input id="strings-count" type="text" min="1" max="24" step="1" value="8" readonly="readonly" style="width:50px;">
+                                <input id="scount-more" class="up-down-button" type="button" value="+" onclick="cb_stringscount_change(+1);">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Frets count</td>
+                            <td>
+                                <input id="fcount-less" class="up-down-button" type="button" value="-" onclick="cb_fretscount_change(-1);">
+                                <input id="frets-count" type="text" min="1" max="32" step="1" value="24" readonly="readonly" style="width:50px;">
+                                <input id="fcount-more" class="up-down-button" type="button" value="+" onclick="cb_fretscount_change(+1);">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Horizontal extent</td>
+                            <td>
+                                <input type="checkbox" id="h-extent" value="yes" onclick="reinit_canvas();">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Vertical extent</td>
+                            <td>
+                                <input type="checkbox" id="v-extent" value="yes" onclick="reinit_canvas();">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Display degrees</td>
+                            <td>
+                                <input type="checkbox" id="display-degrees" checked="true" value="yes" onclick="cb_display_degrees();">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canvas size</td>
+                            <td>
+                                <select class="canvas-size-select" id="canvas-size" value="500x500" onchange="cb_canvas_size_changed();">
+                                <option value="200x150">200x150</option>
+                                <option value="300x200">300x200</option>
+                                <option value="400x300">400x300</option>
+                                <option value="500x400">500x400</option>
+                                <option value="600x500">600x500</option>
+                                <option value="700x600">700x600</option>
+                                <option value="800x700">800x700</option>
+                                <option value="1200x800">1200x800</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="scale-div" style="overflow:hidden;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td colspan="12">Predefined scales
+                                <select class="predef-scale-select" id="predefined-scales" onchange="cb_predef_changed();">
+                                    <option value="predef-0" style="background-color: white;">custom</option>
+                                    <option value="predef-1" style="background-color: rgb(224, 224, 255);">major</option>
+                                    <option value="predef-2" style="background-color: white;">ionian (major mode 1)</option>
+                                    <option value="predef-3" style="background-color: rgb(224, 224, 255);">dorian (major mode 2)</option>
+                                    <option value="predef-4" style="background-color: white;">phrygian (major mode 3)</option>
+                                    <option value="predef-5" style="background-color: rgb(224, 224, 255);">lydian (major mode 4)</option>
+                                    <option value="predef-6" style="background-color: white;">mixolydian (major mode 5)</option>
+                                    <option value="predef-7" style="background-color: rgb(224, 224, 255);">aeolian (major mode 6)</option>
+                                    <option value="predef-8" style="background-color: white;">locrian (major mode 7)</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="12" class="scale-structure-title">Scale structure</td>
+                        </tr>
+                        <tr align="right" id="line1" style="background-color: rgb(255, 224, 255);">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>2+<input id="chk-2+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td></td>
+                            <td>4+<input id="chk-4+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td>5+<input id="chk-5+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td>6+<input id="chk-6+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                        </tr>
+                        <tr align="right" id="line2" style="background-color: rgb(224, 255, 224);">
+                            <td></td>
+                            <td>2-<input id="chk-2-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td>3-<input id="chk-3-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>4-<input id="chk-4-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td>5-<input id="chk-5-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td>6-<input id="chk-6-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>7--<input id="chk-7--" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>7-<input id="chk-7-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                        </tr>
+                        <tr align="right" id="line3" style="background-color: rgb(224, 224, 255);">
+                            <td class="root">1<input id="chk-1" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                            <td></td>
+                            <td>2<input id="chk-2" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                            <td></td>
+                            <td>3<input id="chk-3" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                            <td>4<input id="chk-4" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                            <td></td>
+                            <td>5<input id="chk-5" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                            <td></td>
+                            <td>6<input id="chk-6" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                            <td></td>
+                            <td>7M<input id="chk-7M" type="checkbox" onclick="cb_adjust_chk(this);" checked="true"></td>
+                        </tr>
+                        <tr align="right" id="line4" style="background-color: rgb(255, 176, 176);">
+                            <td></td>
+                            <td>9-<input id="chk-9-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>9<input id="chk-9" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>9+<input id="chk-9+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>11-<input id="chk-11-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>11<input id="chk-11" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>11+<input id="chk-11+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                            <td>13-<input id="chk-13-" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>13<input id="chk-13" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td>13+<input id="chk-13+" type="checkbox" onclick="cb_adjust_chk(this);"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="canvas-tip">(You can drag the mouse to shift the canvas up/down left/right)</p>
+        <canvas class="main-canvas" id="main-canvas" width="1200" height="800"></canvas>
+    </body>
+</html>
