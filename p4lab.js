@@ -66,8 +66,8 @@ predef_scales=new Array(
 );
 
 offset=new Array(10,10);
-fretssize=new Array(25,20);
-posradius=10;
+fretssize=new Array(30,20);
+posradius=9;
 font="10px Arial";
 startdegree=0;
 startdrag=false;
@@ -103,7 +103,7 @@ function init()
         option.setAttribute("value", "predef-"+i.toString());
         predef.appendChild(option);
     }
-    predef.value="predef-0";
+    predef.value="predef-1";
     cb_predef_changed();
     var canvassize=document.getElementById("canvas-size");
     canvassize.value="1200x800";
@@ -182,9 +182,9 @@ function cb_mouse_move(_event)
             else
             {
                 startdegree=(startdegree+1)%12;
-                dragref[0]=_event.clientX;
-                changed=true;
             }
+            dragref[0]=_event.clientX;
+            changed=true;
         }
         if (dt[1]>fretssize[1] || dt[1]<-fretssize[1])
         {
