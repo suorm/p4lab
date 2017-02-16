@@ -85,7 +85,10 @@ function init()
     document.getElementById("line4").style.backgroundColor=colors[3];
     // predefined scales
     var predef=document.getElementById("predefined-scales");
-    while (predef.firstChild) predef.removeChild(predef.firstChild);
+    while (predef.firstChild)
+    {
+        predef.removeChild(predef.firstChild);
+    }
     var optionsColors=new Array("white", "#e0e0ff");
     var colorIndex=0;
     for (var i=0; i<predef_scales.length; i++)
@@ -173,27 +176,37 @@ function cb_mouse_move(_event)
         if (dt[0]>fretssize[0] || dt[0]<-fretssize[0])
         {
             if (dt[0]>fretssize[0])
+            {
                 startdegree=startdegree==0?11:startdegree-1;
+            }
             else
+            {
                 startdegree=(startdegree+1)%12;
                 dragref[0]=_event.clientX;
                 changed=true;
+            }
         }
         if (dt[1]>fretssize[1] || dt[1]<-fretssize[1])
         {
             if (dt[1]>fretssize[1])
+            {
                 startdegree=(startdegree+tuningdifference)%12;
+            }
             else
             {
                 startdegree-=tuningdifference;
                 if (startdegree<0)
+                {
                     startdegree=11+startdegree+1;
+                }
             }
             dragref[1]=_event.clientY;
             changed=true;
         }
         if (changed)
+        {
             reinit_canvas();
+        }
     }
 }
 
@@ -246,8 +259,11 @@ function cb_adjust_chk(_caller)
                 {
                     for (var k=0;k<degrees[i].ids.length;k++)
                     {
-                    if (k==j) continue;
-                    document.getElementById("chk-"+degrees[i].ids[k]).checked=false;
+                        if (k==j)
+                        {
+                            continue;
+                        }
+                        document.getElementById("chk-"+degrees[i].ids[k]).checked=false;
                     }
                     break;
                 }
@@ -292,26 +308,28 @@ function draw_frets(_ctx,_x,_y,_fretscount,_stringscount,_background)
 
 function reinit_canvas()
 {
-    var fretscount = parseInt(document.getElementById("frets-count").value);
-    var stringscount = parseInt(document.getElementById("strings-count").value);
-    var canvas = document.getElementById("main-canvas");
-    var ctx = canvas.getContext('2d');
+    var fretscount=parseInt(document.getElementById("frets-count").value);
+    var stringscount=parseInt(document.getElementById("strings-count").value);
+    var canvas=document.getElementById("main-canvas");
+    var ctx=canvas.getContext('2d');
     var i=0;
     var j=0;
-    offset[0] = (canvas.width-fretscount*fretssize[0])/2;
-    offset[1] = (canvas.height-(stringscount-1)*fretssize[1])/2;
+    offset[0]=(canvas.width-fretscount*fretssize[0])/2;
+    offset[1]=(canvas.height-(stringscount-1)*fretssize[1])/2;
     ctx.strokeStyle="black";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     draw_frets(ctx,offset[0],offset[1],fretscount,stringscount,"white");
     draw_scale(offset,startdegree);
     // horizontal extent
-    if(document.getElementById("h-extent").checked)
+    if (document.getElementById("h-extent").checked)
     {
         // left
         draw_frets(ctx,offset[0]-(fretscount+1)*fretssize[0],offset[1],fretscount,stringscount,"lightgray");
         alt_startdegree=startdegree-fretscount+1;
-        if(alt_startdegree<0)
-        alt_startdegree=11+alt_startdegree+1;
+        if (alt_startdegree<0)
+        {
+            alt_startdegree=11+alt_startdegree+1;
+        }
         draw_scale(new Array(offset[0]-(fretscount+1)*fretssize[0],offset[1]),alt_startdegree);
         // right
         draw_frets(ctx,offset[0]+(fretscount+1)*fretssize[0],offset[1],fretscount,stringscount,"lightgray");
@@ -319,7 +337,7 @@ function reinit_canvas()
         draw_scale(new Array(offset[0]+(fretscount+1)*fretssize[0],offset[1]),alt_startdegree);
     }
     // vertical extent
-    if(document.getElementById("v-extent").checked)
+    if (document.getElementById("v-extent").checked)
     {
         // up
         draw_frets(ctx,offset[0],offset[1]-stringscount*fretssize[1]-fretssize[1]*0.5,fretscount,stringscount,"lightgray");
@@ -328,18 +346,20 @@ function reinit_canvas()
         // down
         draw_frets(ctx,offset[0],offset[1]+stringscount*fretssize[1]+fretssize[1]*0.5,fretscount,stringscount,"lightgray");
         alt_startdegree=startdegree-(stringscount-1)*5;
-        while(alt_startdegree<0)
-        alt_startdegree+=12;
+        while (alt_startdegree<0)
+        {
+            alt_startdegree+=12;
+        }
         draw_scale(new Array(offset[0],offset[1]+stringscount*fretssize[1]+fretssize[1]*0.5),alt_startdegree);
     }
 }
 
 function draw_pos(_offset,_fret,_string,_fillColor,_label)
 {
-    var ctx = document.getElementById("main-canvas").getContext('2d');
-    var stringscount = parseInt(document.getElementById("strings-count").value);
-    var textsize = ctx.measureText(_label);
-    var displaydegrees = document.getElementById("display-degrees").checked;
+    var ctx=document.getElementById("main-canvas").getContext('2d');
+    var stringscount=parseInt(document.getElementById("strings-count").value);
+    var textsize=ctx.measureText(_label);
+    var displaydegrees=document.getElementById("display-degrees").checked;
     ctx.font=font;
     ctx.beginPath();
     ctx.fillStyle=_fillColor
@@ -360,11 +380,11 @@ function draw_pos(_offset,_fret,_string,_fillColor,_label)
 
 function draw_scale(_offset,_startdegree)
 {
-    var tuningdifference = parseInt(document.getElementById("tuning-difference").value);
-    var fretscount = parseInt(document.getElementById("frets-count").value);
-    var stringscount = parseInt(document.getElementById("strings-count").value);
-    var rootpos = new Array(1,stringscount);
-    var cpt = 0;
+    var tuningdifference=parseInt(document.getElementById("tuning-difference").value);
+    var fretscount=parseInt(document.getElementById("frets-count").value);
+    var stringscount=parseInt(document.getElementById("strings-count").value);
+    var rootpos=new Array(1,stringscount);
+    var cpt=0;
     for (var i=stringscount;i>0;i--)
     {
         for (var j=0;j<fretscount;j++)
